@@ -1,0 +1,154 @@
+Partie 1 : Développement de l'API RESTful
+
+1. Conception du service RESTful
+
+➢ Consultation du solde du compte :
+▪ Point final :GET /accounts/{accountId}/balance
+▪ Description : Récupère le solde actuel d'un compte bancaire.
+
+▪ Réponse :
+
+Testsold.json
+ 
+{
+  "accountId": "12345",
+  "balance": 1000.00,
+  "currency": "USD"
+}
+ 
+➢ Historique des transactions :
+• Point final :GET /accounts/{accountId}/transactions
+• Description : Récupère l'historique des transactions pour un compte donné avec pagination.
+• Paramètres de requête :
+o page: Numéro de la page.
+o size: Nombre de transactions par page.
+ 
+ Testtransaction.json
+ 
+{
+ "accountId": "12345",
+ "transactions": [
+   {
+     "date": "2024-08-30",
+     "description": "Virement entrant",
+     "amount": 200.00,
+     "balance": 1200.00
+   },
+   ...
+ ],
+ "page": 1,
+ "size": 10,
+ "totalPages": 5
+}
+ 
+➢ Effectuer un virement :
+• Point final :POST /accounts/{accountId}/transfer
+• Description : Effectue un virement d'un montant spécifié à partir d'un compte bancaire.
+ 
+Requetevirement.json
+ 
+{
+ "toAccountId": "67890",
+ "amount": 100.00,
+ "currency": "USD"
+}
+ 
+ 
+Testvirement.json
+ 
+{
+ "status": "success",
+ "transactionId": "tx1234567890"
+}
+ 
+2. Documentation
+➢ Swagger et OpenAPI :
+o Intégration : Utilisez des annotations dans votre code pour décrire chaque endpoint. Par exemple, avec Spring Boot , vous pouvez utiliser les annotations Swagger comme @Api, @ApiOperation, @ApiParam, etc.
+o Génération de la documentation : La documentation générée par Swagger sera accessible via un endpoint comme /swagger-ui.html, où les développeurs pourront explorer les détails des API, essayer des appels, et comprendre les schémas des données.
+
+
+Partie 2 : Développement de l'API SOAP
+1. Conception du service SOAP
+ 
+• Méthodes SOAP :
+o Consultation du solde du compte :
+▪ Méthode :getBalance(accountId)
+ 
+ 
+ 
+ 
+ 
+ 
+Test1.xml
+ 
+<getBalanceResponse>
+ <accountId>12345</accountId>
+ <balance>1000.00</balance>
+ <currency>USD</currency>
+</getBalanceResponse>
+ 
+ 
+ 
+Historique des transactions :
+• Méthode :getTransactions(accountId, pageNumber, pageSize)
+ 
+Test2.xml
+ 
+<getTransactionsResponse>
+ <accountId>12345</accountId>
+ <transactions>
+   <transaction>
+     <date>2024-08-30</date>
+     <description>Virement entrant</description>
+     <amount>200.00</amount>
+     <balance>1200.00</balance>
+   </transaction>
+   ...
+ </transactions>
+ <page>1</page>
+ <size>10</size>
+ <totalPages>5</totalPages>
+</getTransactionsResponse>
+ 
+Effectuer un virement :
+• Méthode :transferFunds(creditor, debtor, amount, currency)
+•  
+Test3.xml
+ 
+<transferFundsResponse>
+ <status>success</status>
+ <transactionId>tx1234567890</transactionId>
+</transferFundsResponse>
+2. Fichier WSDL
+• WSDL (Web Services Description Language) : Le fichier WSDL décrit l'ensemble des opérations disponibles, les types de données, les messages de requête et de réponse, ainsi que les protocoles de communication. Il servira de contrat pour les développeurs qui consommeront le service SOAP.
+
+
+Partie 3 : Évaluation et Comparaison
+1. Performance, Facilité d'implémentation et Interfaçage
+➢ Performances : Les API RESTful sont généralement plus légères et rapides en raison de l'utilisation de JSON, qui est moins verbeux que XML utilisé dans SOAP. Cependant, SOAP peut offrir des avantages en termes de fiabilité et de sécurité grâce à des protocoles comme WS-Security.
+ 
+➢ Facilité d'implémentation : REST est souvent plus facile à implémenter et à maintenir, surtout avec des outils modernes comme Swagger pour la documentation. SOAP, en revanche, peut-être plus complexe à mettre en place, mais il est mieux adapté pour des environnements nécessitant une sécurité accrue et des transactions complexes.
+ 
+ 
+➢ Interfaçage : REST est plus flexible et largement adopté pour les intégrations avec des applications web modernes et mobiles. SOAP est encore utilisé dans des systèmes hérités et dans des environnements où une communication rigoureuse est requise.
+2. Avantages et inconvénients de chaque approche (REST vs SOAP)
+➢ REST :
+o Avantages :
+▪ Simplicité d'utilisation et d'implémentation.
+▪ Compatible avec une large gamme de clients (navigateurs, applications mobiles).
+▪ Support natif des méthodes HTTP.
+o Inconvénients :
+▪ Moins de standardisation pour les transactions complexes.
+▪ Moins robuste pour les exigences de sécurité strictes sans configurations supplémentaires.
+• SOAP :
+o Avantages :
+▪ Haut niveau de standardisation pour la sécurité et les transactions (WS-Security, WS-AtomicTransaction).
+▪ Supporte des opérations plus complexes avec des spécifications claires (WSDL).
+o Inconvénients :
+▪ Verbeux et peut engendrer des surtaxes réseau.
+▪ Implémentation plus complexe et moins flexible.
+▪  
+En somme, le choix entre REST et SOAP dépendra des besoins spécifiques de l'application bancaire : REST pour la simplicité et l'efficacité, SOAP pour la sécurité et la standardisation des transactions.
+ 
+ 
+ 
